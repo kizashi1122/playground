@@ -1,0 +1,12 @@
+box: debian
+
+build:
+  steps:
+    # Execute the s3sync deploy step, a step provided by wercker
+    - s3sync:
+        key-id: $AWS_ACCESS_KEY_ID
+        key-secret: $AWS_SECRET_ACCESS_KEY
+        bucket-url: $AWS_BUCKET_URL
+        source-dir: /
+        # delete remote files that are no longer in your local folder
+       delete-removed: true
