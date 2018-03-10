@@ -8,5 +8,7 @@ build:
         key-secret: $AWS_SECRET_ACCESS_KEY
         bucket-url: $AWS_BUCKET_URL
         source-dir: /
-        # delete remote files that are no longer in your local folder
-       delete-removed: true
+# delete remote files that are no longer in your local folder
+        delete-removed: true
+                
+
