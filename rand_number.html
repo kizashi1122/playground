@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/0.6.7/fastclick.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-touch.min.js"></script>
+		
+		<script>
+		 angular.module("rand-number", ['ngTouch']);
+		 
+		 angular.module("services", [])
+			 angular.module("controllers", [])
+			 angular.module("rand-number", ["services", "controllers"]);
+		 
+		 // controller
+		 angular.module("controllers")
+				.controller("RandNumCtrl", [
+					"$scope", "$interval",
+					function($scope, $interval) {
+						$scope.prev = -1;
+						$scope.rand_num = function() { 
+							do {
+								num =  Math.floor(Math.random() * 10) + 1;
+							} while ($scope.prev == num);
+							$scope.prev = $scope.num = num;
+						};
+						$scope.rand_num();
+						stop = $interval($scope.rand_num, 2000);
+					}]);
+		</script>
+		<style>
+		 .num { 
+			 margin: 0 auto;
+             padding: 10px;
+			 text-align: center;
+			 cursor: pointer;
+		 }
+		 /*320px*/
+		 @media only screen and (max-device-width:320px) and (orientation:portrait){
+			 .num { 
+				 font-family: 'arial narrow';
+				 font-size: 21em;
+				 letter-spacing: -0.1em;
+				 text-indent: -0.1em;
+			 }
+		 }
+		 @media screen and (min-width: 769px)  {
+			 .num { 
+				 font-size: 30em;
+				 line-height: 500px;
+				 letter-spacing: -0.0em;
+			 }
+		 }
+		</style>
+	</head>
+	<body ng-app="rand-number">
+		<div class="num" ng-controller="RandNumCtrl" ng-click="rand_num()">
+			{{num}}
+		</div>
+        
+	</body>
+</html>

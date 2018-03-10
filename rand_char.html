@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+		<meta charset="UTF-8">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/0.6.7/fastclick.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-touch.min.js"></script>
+		<script>
+		 Array.prototype.shuffle = function() {
+			 var i = this.length;
+			 while(i){
+				 var j = Math.floor(Math.random()*i);
+				 var t = this[--i];
+				 this[i] = this[j];
+				 this[j] = t;
+			 }
+			 return this;
+		 };
+		 angular.module("rand-rchar", ['ngTouch']);
+		 
+		 angular.module("services", [])
+			 angular.module("controllers", [])
+			 angular.module("rand-rchar", ["services", "controllers"]);
+		 
+		 except_chars = ['ぁ','ぃ','ぅ','ぇ','ぉ','っ','ゃ','ゅ','ょ','ゎ','ゑ','ゐ'];
+		 
+		 // controller
+		 angular.module("controllers")
+				.controller("RandRcharCtrl", [
+					"$scope", "$interval",
+					function($scope, $interval) {
+						$scope.array = [];
+						$scope.rand_rchar_shuff = function() {
+							a_code = 'あ'.charCodeAt(0);
+							n_code = 'ん'.charCodeAt(0);
+							t = a_code;
+							if ($scope.array.length == 0) {
+								while (t <= n_code) {
+									s = String.fromCharCode(t);
+									match = false;
+									for (i = 0, len = except_chars.length; i < len; i++) {
+										if (s == except_chars[i]) {
+											match = true;
+											break;
+										}
+									}
+									if (!match) {
+										$scope.array.push(String.fromCharCode(t));
+									}
+									t++;
+								}
+								console.log($scope.array.join(','));
+								$scope.array.shuffle();
+							}
+							$scope.rchar = $scope.array.shift();
+						}
+						$scope.rand_rchar_shuff();
+//						stop = $interval($scope.rand_rchar_shuff, 2000);
+					}]);
+		</script>
+		<style>
+		 .rchar { 
+			 margin: 0 auto;
+             padding: 10px;
+			 text-align: center;
+			 cursor: pointer;
+		 }
+		 /*320px*/
+		 @media only screen and (max-device-width:320px) and (orientation:portrait){
+			 .rchar { 
+				 font-family: 'arial narrow';
+				 font-size: 21em;
+				 letter-spacing: -0.1em;
+				 text-indent: -0.1em;
+			 }
+		 }
+		 @media screen and (min-width: 769px)  {
+			 .rchar { 
+				 font-size: 30em;
+				 line-height: 500px;
+				 letter-spacing: -0.0em;
+			 }
+		 }
+		</style>
+	</head>
+	<body ng-app="rand-rchar">
+		<div class="rchar" ng-controller="RandRcharCtrl" ng-click="rand_rchar_shuff()">
+			{{rchar}}
+		</div>
+        
+	</body>
+</html>
