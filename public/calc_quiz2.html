@@ -5,6 +5,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
   <style>
 #main span { font-size: 50pt; font-weight: bold }
+#main {
+  margin:auto;
+  text-align:center;
+}
 span#answer { color: red }
 .parent{
   width: 100%;
@@ -50,8 +54,8 @@ span#answer { color: red }
 </style>
 </head>
 <body>
-<div style="margin:auto;text-align:center">
-  <div id="main" class="parent">
+<div id="main">
+  <div class="parent">
     <div>
       <h1 style="font-size:24px">算数クイズ</h1>
       <input id="plus"  type="radio" value="+" v-model="sign" v-on:change="prepare" :checked="true"><label for="plus">足し算</label>

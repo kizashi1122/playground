@@ -216,6 +216,11 @@
 ];
   </script>
   <style>
+#main span { font-weight: bold }
+#main {
+  margin:auto;
+  text-align:center;
+}
 .parent{
   width: 95%;
   height: 95%;
@@ -241,7 +246,7 @@
     padding-top:20px;
     clear: float;
     text-align:center;
-    font-size:28px;
+    font-size:36px;
     font-weight:bold;
   }
 }
@@ -256,7 +261,7 @@
     float: left;
   }
   #answer-area{
-    font-size: 22px;
+    font-size:36px;
     font-weight:bold;
     height: 55%;
     width: 45%;
@@ -267,9 +272,9 @@
 </style>
 </head>
 <body>
-<div id="main" style="margin:auto;text-align:center" v-on:click="nextStep">
+<div id="main" v-on:click="nextStep">
   <div class="parent">
-    <h1 style="font-size:24px">国旗クイズ</h1>
+    <h1 style="font-size:32px">国旗クイズ</h1>
     <div>
       <img v-bind:src="img_src">
     </div>
