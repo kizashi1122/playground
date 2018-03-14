@@ -91,8 +91,15 @@ var vue = new Vue({
     prepare: function() {
       this.n1 = _.random(1, 14);
       var max = 14;
-      if (this.sign == '-') { max = this.n1 }
+      if (this.sign === '-') {
+        max = this.n1;
+      }
+      // 引き算の場合は、a - b の場合、a >= b でないといけないため、
+      // a が小さい値の場合は、a = b となってしまう確率が高くなる
       this.n2 = _.random(1, max);
+      if (this.n1 === this.n2) {
+        this.n2 = _.random(1, max); // できるだけ同値の引き算(=0)を避けるため1度だけリトライする
+      }
       this.ans = ''
     },
     answer: function() {
