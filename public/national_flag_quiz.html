@@ -322,10 +322,21 @@ var vue = new Vue({
     nextStep: function() {
       if (this.jp_name === null && this.en_name === null) this.answer();
       else                                                this.prepare();
+    },
+    prevStep: function() {
+      if (this.idx > 1) {
+        this.idx -= 2;
+        this.prepare();
+      }
     }
   },
   created() {
-    document.addEventListener('keydown', this.nextStep);
+    var self = this;
+    document.addEventListener('keydown', function(ev) {
+        console.log(ev.keyCode);
+        if (ev.keyCode == 37) { self.prevStep(); } // left arrow
+        else                  { self.nextStep(); }
+    });
     if (this.use_shuffle) {
       national_flags = _.shuffle(national_flags);
     }
