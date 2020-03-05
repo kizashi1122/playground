@@ -101,7 +101,6 @@ var vue = new Vue({
   },
   methods: {
     initialize: function() {
-      console.log('init');
       this.step = 1;
       this.ans = ''
       this.prepare();
@@ -110,13 +109,14 @@ var vue = new Vue({
       if (this.ans !== '') {
         this.step += 1;
       }
-      this.n1 = _.random(this.rule[this.current].min, this.rule[this.current].max);
+      var current_rule = this.rule[this.current];
+      this.n1 = _.random(current_rule.min, current_rule.max);
       // 引き算の場合は、a - b の場合、a >= b でないといけないため、
       // a が小さい値の場合は、a = b となってしまう確率が高くなる
-      var max = (this.current === 'minus') ? this.n1 : this.rule[this.current].max;
-      this.n2 = _.random(this.rule[this.current].min, max);
+      var max = (this.current === 'minus') ? this.n1 : current_rule.max;
+      this.n2 = _.random(current_rule.min, max);
       if (this.current === 'minus' && this.n1 === this.n2) {
-        this.n2 = _.random(this.rule[this.current].min, max); // できるだけ同値の引き算(=0)を避けるため1度だけリトライする
+        this.n2 = _.random(current_rule.min, max); // できるだけ同値の引き算(=0)を避けるため1度だけリトライする
       }
       this.ans = ''
     },
