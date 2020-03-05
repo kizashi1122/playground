@@ -11,7 +11,7 @@ body {
   font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 #main span { font-size: 50pt; font-weight: bold }
-#main span.timer { font-size: 50pt; font-weight: bold; color:blue }
+#main span.timer { font-size: 25pt; font-weight: bold; color:blue }
 button { padding: .375rem .75rem; font-size: 1rem; border-radius: .25rem; margin: 10px auto }
 #main {
   margin:auto;
@@ -20,8 +20,8 @@ button { padding: .375rem .75rem; font-size: 1rem; border-radius: .25rem; margin
 span#answer { color: red }
 .parent{
   width: 100%;
-  height: 95%;
-  border: 1px solid #aaa;
+  height: 97%;
+  border: 1px solid #888;
   padding: 1px;
   margin: auto;
   position: relative;
@@ -31,7 +31,7 @@ span#answer { color: red }
   /* 縦向き */
   #question-area{
     width: 100%;
-    height: 130px;
+    height: 100px;
     float: left;
   }
   #answer-area{
@@ -45,6 +45,8 @@ span#answer { color: red }
     width: 100%;
     clear: float;
     text-align:center;
+        position: absolute;/*←絶対位置*/
+    bottom: 0; /*下に固定*/
   }
 }
 @media screen and (orientation:landscape) {
@@ -185,7 +187,6 @@ var vue = new Vue({
   },
   created() {
     document.addEventListener('keydown', this.nextStep);
-    touchPannel.addEventListener("touchend",touch);
   }
 });
 vue.prepare();
