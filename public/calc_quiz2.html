@@ -4,6 +4,7 @@
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js" integrity="sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue2-touch-events@2.2.1/index.min.js"></script>
   <style>
 body {
   -webkit-font-size-adjust: 100%;
@@ -86,7 +87,7 @@ span#answer { color: red }
     <div>
       <h2>第 {{step}} 問</h2>
     </div>
-    <div style="margin-top:10px;height:80%" v-on:click="nextStep">
+    <div v-touch:tap="nextStep" style="margin-top:10px;height:80%" v-on:click="nextStep">
       <div id="question-area" v-show="pushedTime">
         <span id="n1">{{ n1 }}</span>
         <span id="sign">{{ rule[current].sign_display }}</span>
@@ -176,14 +177,15 @@ var vue = new Vue({
       this.ans = eval(this.n1 + this.rule[this.current].sign + this.n2);
     },
     nextStep: function() {
-      if (event.keyCode !== 13) return;
+//      if (event.keyCode !== 13) return;
       if (!this.started) return;
       if (this.ans === '') this.answer();
       else                 this.prepare();
     }
   },
   created() {
-      document.addEventListener('keydown', this.nextStep);
+    document.addEventListener('keydown', this.nextStep);
+    touchPannel.addEventListener("touchend",touch);
   }
 });
 vue.prepare();
