@@ -89,7 +89,7 @@ span#answer { color: red }
     <div>
       <h2>第 {{step}} 問</h2>
     </div>
-    <div v-touch:tap="nextStep" style="margin-top:10px;height:80%" v-on:click="nextStep">
+    <div v-touch:end="nextStep" style="margin-top:10px;height:80%" v-on:click="nextStep">
       <div id="question-area" v-show="pushedTime">
         <span id="n1">{{ n1 }}</span>
         <span id="sign">{{ rule[current].sign_display }}</span>
