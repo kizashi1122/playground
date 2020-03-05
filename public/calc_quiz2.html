@@ -3,12 +3,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js" integrity="sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=" crossorigin="anonymous"></script>
   <style>
 body {
   -webkit-font-size-adjust: 100%;
   font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 #main span { font-size: 50pt; font-weight: bold }
+#main span.timer { font-size: 50pt; font-weight: bold; color:blue }
+button { padding: .375rem .75rem; font-size: 1rem; border-radius: .25rem; margin: 10px auto }
 #main {
   margin:auto;
   text-align:center;
@@ -16,7 +19,7 @@ body {
 span#answer { color: red }
 .parent{
   width: 100%;
-  height:95%;
+  height: 95%;
   border: 1px solid #aaa;
   padding: 1px;
   margin: auto;
@@ -36,22 +39,34 @@ span#answer { color: red }
     clear: float;
     text-align:center;
   }
+  #timer-area{
+    margin:auto;
+    width: 100%;
+    clear: float;
+    text-align:center;
+  }
 }
 @media screen and (orientation:landscape) {
   /* 横向き */
   #question-area{
     width: 50%;
-    height: 100%;
+    height: 50%;
     float: left;
     padding-right: 20px;
     text-align: right;
   }
   #answer-area{
     width: 40%;
-    height:100%;
+    height:25%;
     float: right;
     padding-left: 20px;
     text-align: left;
+  }
+  #timer-area{
+    margin:auto;
+    width: 25%;
+    clear: float;
+    text-align:center;
   }
 }
 
@@ -62,7 +77,8 @@ span#answer { color: red }
   <div class="parent">
     <div>
       <h1 style="font-size:24px">算数クイズ</h1>
-      <button id="initialize" v-on:click="initialize">最初から</button><br>
+      <button id="initialize" v-on:click="initialize" :disabled="started">START</button>
+      <button id="initialize" v-on:click="finalize"   :disabled="!started">STOP</button><br>
       <input id="plus"  type="radio" value="plus"  v-model="current" v-on:change="prepare" :checked="true"><label for="plus">足し算</label>
       <input id="minus" type="radio" value="minus" v-model="current" v-on:change="prepare">                <label for="minus">引き算</label>
       <input id="multiply" type="radio" value="multiply" v-model="current" v-on:change="prepare">          <label for="multiply">かけ算</label>
@@ -71,7 +87,7 @@ span#answer { color: red }
       <h2>第 {{step}} 問</h2>
     </div>
     <div style="margin-top:10px;height:80%" v-on:click="nextStep">
-      <div id="question-area">
+      <div id="question-area" v-show="pushedTime">
         <span id="n1">{{ n1 }}</span>
         <span id="sign">{{ rule[current].sign_display }}</span>
         <span id="n2">{{ n2 }}</span>
@@ -79,6 +95,9 @@ span#answer { color: red }
       </div>
       <div id="answer-area">
         <span id="answer">{{ ans }}</span>
+      </div>
+      <div id="timer-area" v-show="currentTime !== 0">
+        <span class="timer">{{currentTime - pushedTime | formatSeconds}}</span>
       </div>
     </div>
   </div>
@@ -88,6 +107,10 @@ span#answer { color: red }
 var vue = new Vue({
   el: '#main',
   data: {
+    started: false,
+    timerId: null,
+    pushedTime: 0,
+    currentTime: 0,
     step: 1,
     n1: 0,
     n2: 0,
@@ -99,17 +122,42 @@ var vue = new Vue({
       multiply: { min: 1,  max: 9,  sign: '*', sign_display: '×' }
     }
   },
+  filters: {
+    formatSeconds: function (milliseconds) {
+      var seconds = Math.floor(milliseconds / 1000);
+      var min = Math.floor(seconds / 60);
+      var sec = seconds % 60;
+      if (min < 10) { min = "0" + min }
+      if (sec < 10) { sec = "0" + sec }
+      return min + ':' + sec;
+    }
+  },
   methods: {
     initialize: function() {
+      var self = this;
+      if (this.timerId !== null) {
+        clearInterval(this.timeId);
+      }
+      this.pushedTime = new Date().getTime();
+      this.timerId = setInterval(function() {self.currentTime = new Date().getTime()}, 50)
       this.step = 1;
       this.ans = ''
+      this.started = true;
       this.prepare();
+    },
+    finalize: function() {
+      if (this.timerId !== null) {
+          clearInterval(this.timerId);
+      }
+      this.started = false;
     },
     prepare: function() {
       if (this.ans !== '') {
         this.step += 1;
       }
       var current_rule = this.rule[this.current];
+      var prev_n1 = this.n1;
+      var prev_n2 = this.n2;
       this.n1 = _.random(current_rule.min, current_rule.max);
       // 引き算の場合は、a - b の場合、a >= b でないといけないため、
       // a が小さい値の場合は、a = b となってしまう確率が高くなる
@@ -118,6 +166,10 @@ var vue = new Vue({
       if (this.current === 'minus' && this.n1 === this.n2) {
         this.n2 = _.random(current_rule.min, max); // できるだけ同値の引き算(=0)を避けるため1度だけリトライする
       }
+      // if (prev_n1 === this.n1 && prev_n2 === this.n2) {
+      //   console.log('さっきと同じ')
+      //   this.prepare();
+      // }
       this.ans = ''
     },
     answer: function() {
@@ -125,12 +177,13 @@ var vue = new Vue({
     },
     nextStep: function() {
       if (event.keyCode !== 13) return;
+      if (!this.started) return;
       if (this.ans === '') this.answer();
       else                 this.prepare();
     }
   },
   created() {
-    document.addEventListener('keydown', this.nextStep);
+      document.addEventListener('keydown', this.nextStep);
   }
 });
 vue.prepare();
