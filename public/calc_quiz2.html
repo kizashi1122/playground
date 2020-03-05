@@ -124,6 +124,7 @@ var vue = new Vue({
       this.ans = eval(this.n1 + this.rule[this.current].sign + this.n2);
     },
     nextStep: function() {
+      if (event.keyCode !== 13) return;
       if (this.ans === '') this.answer();
       else                 this.prepare();
     }
