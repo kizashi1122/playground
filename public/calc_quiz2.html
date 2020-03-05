@@ -142,12 +142,13 @@ var vue = new Vue({
       if (this.timerId !== null) {
         clearInterval(this.timeId);
       }
-      this.pushedTime = new Date().getTime();
-      this.timerId = setInterval(function() {self.currentTime = new Date().getTime()}, 50)
+      this.pushedTime = this.currentTime = 0;
       this.step = 1;
       this.ans = ''
       this.started = true;
       this.prepare();
+      this.pushedTime = new Date().getTime();
+      this.timerId = setInterval(function() {self.currentTime = new Date().getTime()}, 50)
     },
     finalize: function() {
       if (this.timerId !== null) {
