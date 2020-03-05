@@ -1,4 +1,4 @@
-<head>
+x<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -61,13 +61,18 @@ span#answer { color: red }
   <div class="parent">
     <div>
       <h1 style="font-size:24px">算数クイズ</h1>
-      <input id="plus"  type="radio" value="+" v-model="sign" v-on:change="prepare" :checked="true"><label for="plus">足し算</label>
-      <input id="minus" type="radio" value="-" v-model="sign" v-on:change="prepare">                <label for="minus">引き算</label>
+      <button id="initialize" v-on:click="initialize">最初から</button><br>
+      <input id="plus"  type="radio" value="plus"  v-model="current" v-on:change="prepare" :checked="true"><label for="plus">足し算</label>
+      <input id="minus" type="radio" value="minus" v-model="current" v-on:change="prepare">                <label for="minus">引き算</label>
+      <input id="multiply" type="radio" value="multiply" v-model="current" v-on:change="prepare">          <label for="multiply">かけ算</label>
+    </div>
+    <div>
+      <h2>第 {{step}} 問</h2>
     </div>
     <div style="margin-top:10px;height:80%" v-on:click="nextStep">
       <div id="question-area">
         <span id="n1">{{ n1 }}</span>
-        <span id="sign">{{ sign }}</span>
+        <span id="sign">{{ rule[current].sign_display }}</span>
         <span id="n2">{{ n2 }}</span>
         <span id="eq">=</span>
       </div>
@@ -82,29 +87,40 @@ span#answer { color: red }
 var vue = new Vue({
   el: '#main',
   data: {
+    step: 1,
     n1: 0,
     n2: 0,
-    sign: '+',
+    current: 'plus',
     ans: '',
     rule: {
-      '+': { min: 10, max: 99 },
-      '-': { min: 10, max: 99 }
+      plus:     { min: 10, max: 99, sign: '+', sign_display: '+'  },
+      minus:    { min: 10, max: 99, sign: '-', sign_display: '-'  },
+      multiply: { min: 1,  max: 9,  sign: '*', sign_display: '×' }
     }
   },
   methods: {
+    initialize: function() {
+      console.log('init');
+      this.step = 1;
+      this.ans = ''
+      this.prepare();
+    },
     prepare: function() {
-      this.n1 = _.random(this.rule[this.sign].min, this.rule[this.sign].max);
+      if (this.ans !== '') {
+        this.step += 1;
+      }
+      this.n1 = _.random(this.rule[this.current].min, this.rule[this.current].max);
       // 引き算の場合は、a - b の場合、a >= b でないといけないため、
       // a が小さい値の場合は、a = b となってしまう確率が高くなる
-      var max = (this.sign === '-') ? this.n1 : this.rule[this.sign].max;
-      this.n2 = _.random(this.rule[this.sign].min, max);
-      if (this.sign === '-' && this.n1 === this.n2) {
-        this.n2 = _.random(this.rule[this.sign].min, max); // できるだけ同値の引き算(=0)を避けるため1度だけリトライする
+      var max = (this.current === 'minus') ? this.n1 : this.rule[this.current].max;
+      this.n2 = _.random(this.rule[this.current].min, max);
+      if (this.current === 'minus' && this.n1 === this.n2) {
+        this.n2 = _.random(this.rule[this.current].min, max); // できるだけ同値の引き算(=0)を避けるため1度だけリトライする
       }
       this.ans = ''
     },
     answer: function() {
-      this.ans = eval(this.n1 + this.sign + this.n2);
+      this.ans = eval(this.n1 + this.rule[this.current].sign + this.n2);
     },
     nextStep: function() {
       if (this.ans === '') this.answer();
