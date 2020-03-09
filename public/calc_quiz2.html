@@ -43,10 +43,11 @@ span#answer { color: red }
   }
   #timer-area{
     margin:auto;
+    padding-bottom: 10px;
     width: 100%;
     clear: float;
     text-align:center;
-        position: absolute;/*←絶対位置*/
+    position: absolute;/*←絶対位置*/
     bottom: 0; /*下に固定*/
   }
 }
@@ -68,9 +69,12 @@ span#answer { color: red }
   }
   #timer-area{
     margin:auto;
-    width: 25%;
+    padding-bottom: 10px;
+    width: 100%;
     clear: float;
     text-align:center;
+    position: absolute;/*←絶対位置*/
+    bottom: 0; /*下に固定*/
   }
 }
 
@@ -92,9 +96,7 @@ span#answer { color: red }
     </div>
     <div style="margin-top:10px;height:80%" v-on:click="nextStep">
       <div id="question-area" v-show="pushedTime">
-        <span id="n1">{{ n1 }}</span>
-        <span id="sign">{{ rule[current].sign_display }}</span>
-        <span id="n2">{{ n2 }}</span>
+        <span id="n1">{{ n1 }}</span> <span id="sign">{{ rule[current].sign_display }}</span> <span id="n2">{{ n2 }}</span>
         <span id="eq">=</span>
       </div>
       <div id="answer-area">
