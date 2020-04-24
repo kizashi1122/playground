@@ -97,7 +97,7 @@ span#answer { color: red }
     </div>
     <div style="margin-top:10px;height:80%" v-on:click="nextStep">
       <div id="question-area" v-show="pushedTime">
-        <span id="n1">{{ n1 }}</span> <span id="sign">{{ rule[current].sign_display }}</span> <span id="n2">{{ n2 }}</span>
+        <span>{{ question }}</span>
         <span id="eq">=</span>
       </div>
       <div id="answer-area">
@@ -124,9 +124,14 @@ var vue = new Vue({
     current: 'plus',
     ans: '',
     rule: {
-      plus:     { min: 10, max: 99, sign: '+', sign_display: '+'  },
-      minus:    { min: 10, max: 99, sign: '-', sign_display: '-'  },
-      multiply: { min: 1,  max: 9,  sign: '*', sign_display: '×' }
+      plus:     { min: 10, max: 99, sign: '+', signDisplay: '+'  },
+      minus:    { min: 10, max: 99, sign: '-', signDisplay: '-'  },
+      multiply: { min: 1,  max: 9,  sign: '*', signDisplay: '×' }
+    }
+  },
+  computed: {
+    question: function() {
+      return this.n1 + " " + this.rule[this.current].signDisplay + " " + this.n2 + " ";
     }
   },
   filters: {
