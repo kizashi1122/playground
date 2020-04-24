@@ -12,9 +12,15 @@ body {
 }
 #main span { font-size: 50pt; font-weight: bold }
 #main span.timer { font-size: 25pt; font-weight: bold; color:blue }
-button { padding: .375rem .75rem; font-size: 1rem; border-radius: .25rem; margin: 10px auto }
+button { padding: .475rem 1.75rem; font-size: 1rem; border-radius: .25rem; margin: 10px auto }
 button#initialize { color: #fff; background-color: #0069d9; border-color: #0062cc }
 button#finalize   { color: #fff; background-color: #c82333; border-color: #bd2130 }
+input[type=checkbox], input[type=radio] {
+  -ms-transform: scale(1.5, 1.5);
+  -webkit-transform: scale(1.5, 1.5);
+  transform: scale(1.5, 1.5);
+  margin: 8px;
+}
 #main {
   margin:auto;
   text-align:center;
@@ -86,11 +92,14 @@ span#answer { color: red }
   <div class="parent">
     <div>
       <h1 style="font-size:24px">算数クイズ</h1>
-      <button id="initialize" v-on:click="initialize" :disabled="started">START</button>
-      <button id="finalize"   v-on:click="finalize"   :disabled="!started">STOP</button><br>
+      <div style="margin: 10px">
+        <button id="initialize" v-on:click="initialize" :disabled="started">START</button>
+        <button id="finalize"   v-on:click="finalize"   :disabled="!started">STOP</button><br>
+      </div>
       <input id="plus"  type="radio" value="plus"  v-model="current" v-on:change="prepare" :checked="true"><label for="plus">足し算</label>
       <input id="minus" type="radio" value="minus" v-model="current" v-on:change="prepare">                <label for="minus">引き算</label>
       <input id="multiply" type="radio" value="multiply" v-model="current" v-on:change="prepare">          <label for="multiply">かけ算</label>
+      <input id="shuffle"  type="checkbox" value="shuffle" v-model="shuffle">                              <label for="shuffle">シャッフル</label>
     </div>
     <div>
       <h2>第 {{step}} 問</h2>
@@ -115,6 +124,7 @@ var vue = new Vue({
   el: '#main',
   data: {
     started: false,
+    shuffle: false,
     timerId: null,
     pushedTime: 0,
     currentTime: 0,
@@ -165,9 +175,12 @@ var vue = new Vue({
       this.started = false;
     },
     prepare: function() {
-      if (this.ans !== '') {
-        this.step += 1;
+      if (this.ans !== '') { this.step += 1 }
+
+      if (this.shuffle) {
+        this.current = _.sample(Object.keys(this.rule));
       }
+
       var current_rule = this.rule[this.current];
       var prev_n1 = this.n1;
       var prev_n2 = this.n2;
