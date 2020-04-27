@@ -178,7 +178,8 @@ var vue = new Vue({
       if (this.ans !== '') { this.step += 1 }
 
       if (this.shuffle) {
-        this.current = _.sample(Object.keys(this.rule));
+        //        this.current = _.sample(Object.keys(this.rule));
+        this.current = _.sample(['plus', 'minus']);
       }
 
       var current_rule = this.rule[this.current];
