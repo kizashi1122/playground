@@ -1,0 +1,146 @@
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script>
+    var prefectures = [
+      null,
+      '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
+      '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
+      '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県',
+      '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県',
+      '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県',
+      '徳島県', '香川県', '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県',
+      '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+    ];
+  </script>
+  <style>
+body {
+  -webkit-font-size-adjust: 100%;
+}
+#main span { font-weight: bold }
+#main span.capital { font-weight: bold; color: #777 }
+#main {
+  margin:auto;
+  text-align:center;
+}
+.parent{
+  width: 95%;
+  height: 95%;
+  border: 1px solid #aaa;
+  padding: 10px;
+  margin: auto;
+  position: relative;
+  text-align: center;
+}
+
+@media screen and (orientation:portrait) {
+  /* 縦向き */
+  img {
+    border: solid 1px #ccc;
+    padding: 10px;
+    width: 80%;
+    margin: 10px;
+    background-color: #ddd;
+  }
+  #answer-area{
+    margin:auto;
+    width: 100%;
+    padding-top:20px;
+    clear: float;
+    text-align:center;
+    font-size:36px;
+    font-weight:bold;
+  }
+}
+@media screen and (orientation:landscape) {
+  /* 横向き */
+  img {
+    border: solid 1px #ccc;
+    padding: 10px;
+    max-height: 70%;
+    width: 25%;
+    margin: 20px 10px;
+    background-color: #ddd;
+    float: left;
+  }
+  #answer-area{
+    font-size:72px;
+    font-weight:bold;
+    width: 45%;
+    padding-top:20px;
+    float: left;
+  }
+}
+</style>
+</head>
+<body>
+<div id="main" v-on:click="nextStep">
+  <div class="parent">
+    <h1 style="font-size:24px">都道府県形クイズ</h1>
+    <div>
+      <img v-bind:src="img_path">
+    </div>
+    <div id="answer-area">
+      <span>{{pref_name}}</span><br>
+    </div>
+  </div>
+</div>
+<script>
+var vue = new Vue({
+   el: '#main',
+   data: {
+     order_indices: [],
+     rand_idx: 0,
+     idx: 0,
+     pref_name: '',
+     img_path: '',
+   },
+   methods: {
+     initialize: function() {
+       // random なインデックス配列を作る
+       this.order_indices = Array.from(Array(prefectures.length).keys());
+       this.order_indices.shift(); // 先頭の 0 は捨てておく
+       this.order_indices = _.shuffle(this.order_indices);
+       console.log(this.order_indices);
+       this.idx = 0;
+     },
+     prepare: function() {
+       this.rand_idx = this.order_indices.shift();
+       var filebase = this.rand_idx > 9 ? this.rand_idx : '0' + this.rand_idx;
+       this.img_path = "pref_images/" + filebase + ".jpg";
+//       console.log(this.img_path);
+       this.pref_name = null;
+       this.idx += 1;
+       if (this.order_indices.length === 0) {
+         this.initialize();
+       }
+    },
+    answer: function() {
+      this.pref_name = prefectures[this.rand_idx]; // 都道府県名
+    },
+    nextStep: function() {
+      if (this.pref_name === null) this.answer();
+      else                         this.prepare();
+    },
+    prevStep: function() {
+      if (this.idx > 1) {
+        this.idx -= 2;
+        this.prepare();
+      }
+    }
+  },
+  created() {
+    var self = this;
+    document.addEventListener('keydown', function(ev) {
+      if (ev.keyCode == 37) { self.prevStep(); } // left arrow
+      else                  { self.nextStep(); }
+    });
+    this.initialize();
+  }
+});
+vue.prepare();
+</script>
+</body>
+</html>
