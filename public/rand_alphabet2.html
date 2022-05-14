@@ -65,7 +65,7 @@
 			 text-align: center;
 		 }
 		 /*320px*/
-		 @media only screen and (max-device-width:320px) and (orientation:portrait){
+		 @media only screen and (orientation:portrait){
 			 .rchar {
 				 font-family: Helvetica, 'Courier New', 'arial narrow';
 				 font-size: 10em;
@@ -97,7 +97,7 @@
 		<div ng-controller="RandRcharCtrl" class="base">
 			<span ng-click="rand_rchar_shuff()" class="rchar">{{rcharUp}} {{rcharDown}}</span>
 			<br>
-			<span class="reading">{{reading}}</span>
+			<!-- <span class="reading">{{reading}}</span> -->
 			<br>
 			<audio ng-src="{{audioUrl}}" controls style="margin-top:15px">
 		</div>
